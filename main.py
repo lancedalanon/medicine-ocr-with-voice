@@ -19,17 +19,26 @@ class TTSApp(App):
         # Main layout to arrange widgets vertically
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        # Create a text input field for user input
-        self.text_input = TextInput(hint_text='Enter text here...', size_hint=(1, 0.6), multiline=False)
+        # Create a larger text input field for user input
+        self.text_input = TextInput(
+            hint_text='Enter text here...',
+            size_hint=(1, 0.8),  # Increase vertical space allocation
+            multiline=False,
+            background_color=(1, 1, 1, 0),  # Transparent background to blend with layout
+            foreground_color=(1, 1, 1, 1),  # Text color (white)
+            font_size='32sp',  # Increase font size
+            background_normal='',  # Remove normal background image
+            background_active=''  # Remove active background image
+        )
         layout.add_widget(self.text_input)
 
         # Create a button for TTS functionality
-        tts_button = Button(text="Speak", size_hint=(1, 0.2))
+        tts_button = Button(text="Speak", size_hint=(1, 0.1))
         tts_button.bind(on_press=self.text_to_speech)  # Bind button press to text-to-speech function
         layout.add_widget(tts_button)
 
         # Create a label to show the status
-        self.status_label = Label(text="Click the button to hear the text", size_hint=(1, 0.2))
+        self.status_label = Label(text="Click the button to hear the text", size_hint=(1, 0.1))
         layout.add_widget(self.status_label)
 
         return layout
