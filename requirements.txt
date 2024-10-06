@@ -1,7 +1,6 @@
 kivy
 pyttsx3
-pyaudio
-pydub
 easyocr
 Pillow
 opencv-python
+pygame
