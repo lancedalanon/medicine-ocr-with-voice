@@ -2,12 +2,13 @@ import pyttsx3
 import pygame
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.clock import Clock
 import os
 import time 
+
 class TTSApp(App):
     """Main App class for the layout of the application"""
     
@@ -23,46 +24,42 @@ class TTSApp(App):
         """Build the UI layout of the application"""
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        # Create a larger text input field for user input with wrapping and character limit
+        # Create a larger text input field for user input with transparent background
         self.text_input = TextInput(
             hint_text='Enter text here...',
-            size_hint=(1, 0.8),
+            size_hint=(1, 0.7),  # Set height to 70%
             multiline=True,  # Enable multiline for wrapping
-            background_color=(1, 1, 1, 1),  # Make the background fully opaque for visibility
-            foreground_color=(0, 0, 0, 1),  # Text color (black)
-            font_size='32sp',
+            background_color=(1, 1, 1, 0),  # Fully transparent
+            foreground_color=(1, 1, 1, 1),  # Text color (white)
+            font_size='32sp',  # Adjusted font size to 32
         )
         self.text_input.bind(text=self.on_text)  # Bind the text input to check for length
         layout.add_widget(self.text_input)
 
-        # Button layout
-        button_layout = BoxLayout(size_hint=(1, 0.1), spacing=10)
+        # Button layout using GridLayout for two rows, set height to 30%
+        button_layout = GridLayout(cols=2, size_hint=(1, 0.3), spacing=10)
 
         # TTS button
-        self.tts_button = Button(text="Speak")
+        self.tts_button = Button(text="Start", size_hint=(1, 1), font_size='20sp')  # Increase button size
         self.tts_button.bind(on_press=self.read)  # Bind the read method
         button_layout.add_widget(self.tts_button)
 
         # Stop button
-        stop_button = Button(text="Stop")
+        stop_button = Button(text="Stop", size_hint=(1, 1), font_size='20sp')  # Increase button size
         stop_button.bind(on_press=self.stop)  # Bind the stop method
         button_layout.add_widget(stop_button)
 
-        # Pause button
-        pause_button = Button(text="Pause")
-        pause_button.bind(on_press=self.pause)  # Bind the pause method
-        button_layout.add_widget(pause_button)
+        # Capture button
+        capture_button = Button(text="Capture", size_hint=(1, 1), font_size='20sp')  # Increase button size
+        capture_button.bind(on_press=self.capture)  # Bind the capture method
+        button_layout.add_widget(capture_button)
 
-        # Unpause button
-        unpause_button = Button(text="Unpause")
-        unpause_button.bind(on_press=self.unpause)  # Bind the unpause method
-        button_layout.add_widget(unpause_button)
+        # Quit button
+        quit_button = Button(text="Quit", size_hint=(1, 1), font_size='20sp')  # Increase button size
+        quit_button.bind(on_press=self.stop_app)  # Bind the quit method
+        button_layout.add_widget(quit_button)
 
         layout.add_widget(button_layout)
-
-        # Status label
-        self.status_label = Label(text="Click 'Speak' to hear the text", size_hint=(1, 0.1))
-        layout.add_widget(self.status_label)
 
         return layout
 
@@ -76,7 +73,6 @@ class TTSApp(App):
         text = self.text_input.text.strip()  # Get trimmed text from input
 
         if text:
-            self.status_label.text = "Speaking..."
             self.is_speaking = True  # Mark that we are speaking
 
             # Check if temp.wav already exists and delete it
@@ -114,26 +110,21 @@ class TTSApp(App):
         """Check if the music is still playing and update the status label accordingly"""
         if not pygame.mixer.music.get_busy():
             self.is_speaking = False
-            self.status_label.text = "Click 'Speak' to hear the text"
 
     def stop(self, instance):
         """Stop the audio playback"""
         if self.is_speaking:
             pygame.mixer.music.stop()
             self.is_speaking = False
-            self.status_label.text = "Stopped speaking"
 
-    def pause(self, instance):
-        """Pause the audio playback"""
-        if self.is_speaking:
-            pygame.mixer.music.pause()
-            self.status_label.text = "Paused"
+    def capture(self, instance):
+        """Handle capture button press (custom functionality can be implemented here)"""
+        pass  # You can implement capture functionality here
 
-    def unpause(self, instance):
-        """Unpause the audio playback"""
-        if self.is_speaking:
-            pygame.mixer.music.unpause()
-            self.status_label.text = "Resumed"
+    def stop_app(self, instance):
+        """Quit the application gracefully"""
+        self.stop(instance)  # Stop any speaking
+        App.get_running_app().stop()  # Stop the app
 
 # Run the app
 if __name__ == '__main__':
