@@ -18,13 +18,16 @@ class AudioManager:
         self.engine.setProperty('rate', rate)  # Set speech rate
         self.engine.setProperty('volume', volume)  # Set volume level
 
-    def speak(self, text):
+    def speak(self, text, callback=None):
         """Convert text to speech and play it.
 
         Args:
             text (str): The text to be spoken.
+            callback (function): Function to call when speech is done.
         """
         self.engine.say(text)  # Queue the text for speaking
+        # Wait for the speech to finish and then call the callback
+        self.engine.connect('finished-utterance', lambda name, completed: callback() if completed and callback else None)
         self.engine.runAndWait()  # Block while processing all queued commands
 
     def cleanup(self):
