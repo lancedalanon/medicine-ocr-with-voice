@@ -4,7 +4,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from audio_manager import AudioManager  # Import the AudioManager
-from camera_module import CameraPopup  # Import the CameraPopup class
 
 class TTSApp(App):
     """Main App class for the Text-to-Speech mobile app"""
@@ -39,9 +38,9 @@ class TTSApp(App):
         tts_button.bind(on_press=self.text_to_speech)
         button_layout.add_widget(tts_button)
 
-        # Capture button
+        # Capture button (updated to print a message)
         capture_button = Button(text="Capture")
-        capture_button.bind(on_press=self.open_camera)
+        capture_button.bind(on_press=self.capture_action)
         button_layout.add_widget(capture_button)
 
         layout.add_widget(button_layout)
@@ -67,15 +66,9 @@ class TTSApp(App):
             self.status_label.text = f"Error: {str(e)}"
             print(f"An error occurred: {e}")
 
-    def open_camera(self, instance):
-        """Open the camera using the CameraPopup module"""
-        camera_popup = CameraPopup(on_capture=self.handle_capture)  # Pass capture callback
-        camera_popup.open()
-
-    def handle_capture(self, camera):
-        """Handle the image capture from the camera"""
-        # You can implement your logic for capturing the image here
-        print("Capture image logic goes here!")
+    def capture_action(self, instance):
+        """Handle capture action by printing a message"""
+        print("Capture button pressed!")
 
 # Run the app
 if __name__ == '__main__':
